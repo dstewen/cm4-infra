@@ -12,52 +12,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  archlinux:
-    name: workstation (archlinux)
-    runs-on: ubuntu-latest
-    container:
-      image: greyltc/archlinux-aur:yay
-      options: --user root
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Test Arch dependencies
-        shell: bash
-        run: >-
-          sudo -E -u ab -D~ bash -c '
-          cd $GITHUB_WORKSPACE;
-          yay -Syu --needed --noconfirm --noprogressbar go-task;
-          go-task workstation:arch
-          '
-
-  generic-linux:
-    name: workstation (generic-linux)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Homebrew
-        id: setup-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Setup Workflow Tools
-        shell: bash
-        run: brew install go-task
-
-      - name: Run Workstation Generic linux tasks
-        shell: bash
-        run: task workstation:generic-linux
-
   configure:
-    if: ${{ github.repository == 'onedr0p/cluster-template' }}
     name: configure
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         config-files:
+          - k3s-ipv4
+          - k3s-ipv6
           - talos
     steps:
       - name: Checkout
@@ -71,14 +34,14 @@ jobs:
         uses: actions/setup-python@v5
         id: setup-python
         with:
-          python-version: "3.11"
+          python-version: "3.11" # minimum supported version
 
       - name: Cache homebrew packages
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/cache@v4
         id: cache-homebrew-packages
         with:
-          key: homebrew-${{ runner.os }}-${{ steps.setup-homebrew.outputs.gems-hash }}-${{ hashFiles('.taskfiles/workstation/Brewfile') }}
+          key: homebrew-${{ runner.os }}-${{ steps.setup-homebrew.outputs.gems-hash }}-${{ hashFiles('.taskfiles/Workstation/Brewfile') }}
           path: /home/linuxbrew/.linuxbrew
 
       - name: Cache venv
@@ -108,7 +71,7 @@ jobs:
 
       - name: Run Sops Age key task
         shell: bash
-        run: task bootstrap:age-keygen
+        run: task sops:age-keygen
 
       - name: Run init tasks
         shell: bash
@@ -122,6 +85,23 @@ jobs:
         shell: bash
         run: task configure --yes
 
-      - name: Run clean
+      - name: Run Talos tasks
+        if: ${{ startsWith(matrix.config-files, 'talos') }}
         shell: bash
-        run: task bootstrap:clean
+        run: |
+          task talos:bootstrap-gensecret
+          task talos:bootstrap-genconfig
+
+      - name: Run Ansible tasks
+        if: ${{ startsWith(matrix.config-files, 'k3s') }}
+        shell: bash
+        run: |
+          task ansible:deps force=false
+          task ansible:lint
+          task ansible:list
+
+      - name: Run repo clean and reset tasks
+        shell: bash
+        run: |
+          task repository:clean
+          task repository:reset --yes

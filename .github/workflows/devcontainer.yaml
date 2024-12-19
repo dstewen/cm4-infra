@@ -11,7 +11,7 @@ on:
     branches: ["main"]
     paths: [".devcontainer/ci/**"]
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * 1"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -19,9 +19,8 @@ concurrency:
 
 jobs:
   devcontainer:
-    if: ${{ github.repository == 'onedr0p/cluster-template' }}
     name: publish
-    runs-on: ubuntu-24.04 # TODO: Change to ubuntu-latest when available
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -34,6 +33,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
 
       - if: ${{ github.event_name != 'pull_request' }}
         name: Login to GitHub Container Registry
@@ -45,10 +46,12 @@ jobs:
 
       - name: Build and push
         uses: devcontainers/ci@v0.3
+        env:
+          BUILDX_NO_DEFAULT_ATTESTATIONS: true
         with:
           imageName: ghcr.io/${{ github.repository }}/devcontainer
-          cacheFrom: ghcr.io/${{ github.repository }}/devcontainer
-          imageTag: latest
+          # cacheFrom: ghcr.io/${{ github.repository }}/devcontainer
+          imageTag: base,latest
           platform: linux/amd64,linux/arm64
           configFile: .devcontainer/ci/devcontainer.json
           push: ${{ github.event_name == 'pull_request' && 'never' || 'always' }}

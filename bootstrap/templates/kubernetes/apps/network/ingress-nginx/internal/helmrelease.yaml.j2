@@ -1,5 +1,5 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: ingress-nginx-internal
@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: ingress-nginx
-      version: 4.11.2
+      version: 4.10.0
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
@@ -21,17 +21,16 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  uninstall:
+    keepHistory: false
   values:
     fullnameOverride: ingress-nginx-internal
     controller:
+      replicaCount: 1
       service:
         annotations:
-          lbipam.cilium.io/ips: "#{ bootstrap_cloudflare.ingress_vip }#"
-        #% if bgp.enabled %#
-        externalTrafficPolicy: Local
-        #% else %#
+          io.cilium/lb-ipam-ips: "#{ bootstrap_cloudflare.ingress_vip }#"
         externalTrafficPolicy: Cluster
-        #% endif %#
       ingressClassResource:
         name: internal
         default: true
@@ -73,8 +72,19 @@ spec:
         #% else %#
         default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-staging-tls"
         #% endif %#
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/instance: ingress-nginx-internal
+              app.kubernetes.io/component: controller
       resources:
         requests:
           cpu: 100m
         limits:
           memory: 500Mi
+    defaultBackend:
+      enabled: false
