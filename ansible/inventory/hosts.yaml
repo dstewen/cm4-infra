@@ -1,0 +1,16 @@
+---
+kubernetes:
+  children:
+    controllers:
+      hosts:
+        "blade1":
+          ansible_user: "dstewen"
+          ansible_host: "192.168.10.31"
+    workers:
+      hosts:
+        "blade2":
+          ansible_user: "dstewen"
+          ansible_host: "192.168.10.32"
+        "blade3":
+          ansible_user: "dstewen"
+          ansible_host: "192.168.10.33"
