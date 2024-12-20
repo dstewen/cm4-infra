@@ -38,23 +38,23 @@ spec:
               tag: 0.7.3-nbxyz2
 
     defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - arm64
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 50
-            preference:
-              matchExpressions:
-              - key: node-role.kubernetes.io/worker
-                operator: In
-                values:
-                - worker
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#            - matchExpressions:
+#              - key: kubernetes.io/arch
+#                operator: In
+#                values:
+#                - arm64
+#          preferredDuringSchedulingIgnoredDuringExecution:
+#          - weight: 50
+#            preference:
+#              matchExpressions:
+#              - key: node-role.kubernetes.io/worker
+#                operator: In
+#                values:
+#                - worker
       hostNetwork: true
 
     service:
@@ -112,7 +112,7 @@ spec:
     persistence:
       config:
         enabled: true
-        storageClass: local-hostpath
+        storageClass: openebs-hostpath
         accessMode: ReadWriteOnce
         size: 2Gi
         globalMounts:
@@ -120,7 +120,7 @@ spec:
         retain: true
       data:
         enabled: true
-        storageClass: local-hostpath
+        storageClass: openebs-hostpath
         accessMode: ReadWriteOnce
         size: 50Gi
         globalMounts:
