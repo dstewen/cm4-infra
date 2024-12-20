@@ -1,0 +1,19 @@
+---
+kubernetes:
+  children:
+    controllers:
+      hosts:
+        "blade1":
+          ansible_user: "dstewen"
+          ansible_host: "192.168.10.31"
+          ansible_ssh_private_key_file: "~/Documents/k3svms"
+    workers:
+      hosts:
+        "blade2":
+          ansible_user: "dstewen"
+          ansible_host: "192.168.10.32"
+          ansible_ssh_private_key_file: "~/Documents/k3svms"
+        "blade3":
+          ansible_user: "dstewen"
+          ansible_host: "192.168.10.33"
+          ansible_ssh_private_key_file: "~/Documents/k3svms"
