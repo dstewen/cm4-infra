@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: meshcentral-config
-  namespace: network
+  namespace: infra
 data:
   config.json: |
     {
