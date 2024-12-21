@@ -67,7 +67,8 @@ spec:
         enabled: true
         primary: false
         type: LoadBalancer
-        loadBalancerIP: ${SVC_PXE_ADDR}
+        annotations:
+          io.cilium/lb-ipam-ips: ${SVC_PXE_ADDR}
         controller: main
         externalTrafficPolicy: Cluster
         ports:
