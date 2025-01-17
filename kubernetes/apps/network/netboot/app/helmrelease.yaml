@@ -36,8 +36,10 @@ spec:
             image:
               repository: ghcr.io/netbootxyz/netbootxyz
               tag: 0.7.3-nbxyz2
+            env:
+              TFTPD_OPTS: "--tftp-single-port"
 
-    defaultPodOptions:
+#    defaultPodOptions:
 #      affinity:
 #        nodeAffinity:
 #          requiredDuringSchedulingIgnoredDuringExecution:
@@ -55,35 +57,23 @@ spec:
 #                operator: In
 #                values:
 #                - worker
-      hostNetwork: true
+#      hostNetwork: true
 
     service:
       main:
         controller: main
-        ports:
-          http:
-            port: 3000
-      web:
-        enabled: true
-        primary: false
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: ${SVC_PXE_ADDR}
-        controller: main
-        externalTrafficPolicy: Cluster
         ports:
+          http:
+            port: 3000
           web:
             enabled: true
             primary: false
             port: 80
             targetPort: 80
             protocol: HTTP
-      tftp:
-        enabled: true
-        primary: false
-        controller: main
-        type: NodePort
-        ports:
           tftp:
             enabled: true
             primary: false
