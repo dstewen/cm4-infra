@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app smee
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: smee
+      version: 0.6.2
+      sourceRef:
+        kind: HelmRepository
+        name: tinkerbell
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: openebs
+      namespace: openebs-system
+#    - name: volsync
+#      namespace: volsync
+  values:
+    tink:
+      server:
+        deploy: false
+      controller:
+        deploy: false
+    rufio:
+      deploy: false
+    hegel:
+      deploy: false
+    smee:
+      hostNetwork: true
+      publicIP: 192.168.10.32  # Set to the IP address of your node
+      trustedProxies:
+      - 0.0.0.0/0
+      nodeSelector:
+        kubernetes.io/hostname: blade2  # Set to the k8s node name. Has to match the publicIP value above
+    stack:
+      enabled: false

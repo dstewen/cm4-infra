@@ -1,0 +1,22 @@
+---
+apiVersion: "tinkerbell.org/v1alpha1"
+kind: Hardware
+metadata:
+  name: bld-e45f0150272d
+  namespace: tink-system
+spec:
+  interfaces:
+    - dhcp:
+        ip:
+          address: 192.168.10.25
+          gateway: 192.168.10.1
+          netmask: 255.255.255.0
+        mac: e4:5f:01:50:27:2d
+        name_servers:
+          - 192.168.10.195
+        uefi: true
+      netboot:
+        allowPXE: true
+        allowWorkflow: false
+        ipxe:
+          url: https://pxe.factory.talos.dev/pxe/779804eb249e184f2986a0cacb95aa6ed8f133878449da8df9a68829f90902b9/v1.7.5/metal-arm64
