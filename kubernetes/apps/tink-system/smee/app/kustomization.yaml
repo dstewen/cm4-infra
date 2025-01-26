@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
 #  - ./volsync_nas.yaml
-  - ./resources/pi4cmio.yaml
+#  - ./resources/pi4cmio.yaml
