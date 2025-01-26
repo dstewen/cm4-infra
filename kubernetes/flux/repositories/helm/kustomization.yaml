@@ -15,4 +15,4 @@ resources:
   - ./metrics-server.yaml
   - ./openebs.yaml
   - ./stakater.yaml
-#  - ./tinkerbell-charts.yaml
+  - ./tinkerbell-charts.yaml
