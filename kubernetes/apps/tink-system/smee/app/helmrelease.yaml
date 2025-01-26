@@ -8,8 +8,8 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: smee
-      version: v0.6.2
+      chart: stack
+      version: 0.6.2
       sourceRef:
         kind: HelmRepository
         name: tinkerbell
