@@ -39,6 +39,8 @@ spec:
     hegel:
       deploy: false
     smee:
+      dhcp:
+        enabled: false
       hostNetwork: true
       publicIP: 192.168.10.32  # Set to the IP address of your node
       trustedProxies:
