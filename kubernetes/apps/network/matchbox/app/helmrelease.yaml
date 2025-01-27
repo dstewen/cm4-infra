@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app matchbox
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    controllers:
+      matchbox:
+        annotations:
+          secret.reloader.stakater.com/reload: matchbox-config
+        containers:
+          app:
+            image:
+              repository: quay.io/poseidon/matchbox:v0.10.0
+              tag: v0.10.0
+            env:
+              TZ: "${TIMEZONE}"
+              MATCHBOX_ADDRESS: "0.0.0.0:8080"
+              MATCHBOX_RPC_ADDRESS: "0.0.0.0:8081"
+              MATCHBOX_LOG_LEVEL: "debug"
+            resources:
+              requests:
+                cpu: 30m
+                memory: 20Mi
+              limits:
+                memory: 50Mi
+    service:
+      app:
+        controller: matchbox
+        ports:
+          http:
+            port: 8080
+          https:
+            port: 8081
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts: [*host]
+    persistence:
+      config:
+        type: configMap
+        name: matchbox-config
+        advancedMounts:
+          matchbox:
+            app:
+              - path: /opt/matchbox/matchbox-data/config.json
+                subPath: config.json
+      data:
+        existingClaim: matchbox-data
+        globalMounts:
+          - path: /root
+            subPath: rootdir
+          - path: /opt/matchbox/matchbox-data
+            subPath: data
+          - path: /opt/matchbox/matchbox-files
+            subPath: userfiles
+          - path: /opt/matchbox/matchbox-backups
+            subPath: backups
+      assets:
+        existingClaim: matchbox-assets
+        globalMounts:
+          - path: /root
+            subPath: rootdir
+          - path: /opt/matchbox/matchbox-ass
+            subPath: data
+          - path: /opt/matchbox/matchbox-files
+            subPath: userfiles
+          - path: /opt/matchbox/matchbox-backups
+            subPath: backups
