@@ -3,7 +3,7 @@
   "name": "default",
   "boot": {
     "kernel": "/assets/vmlinuz",
-    "initrd": ["/assets/initramfs.xz"],
+    "initrd": ["/assets/initramfs-arm64.xz"],
     "args": [
       "initrd=initramfs.xz",
       "init_on_alloc=1",
