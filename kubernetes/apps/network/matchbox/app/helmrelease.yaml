@@ -47,7 +47,7 @@ spec:
       app:
         className: internal
         hosts:
-          - host: *host
+          - host: &host matchbox.${SECRET_DOMAIN}
             paths:
               - path: /
                 service:
