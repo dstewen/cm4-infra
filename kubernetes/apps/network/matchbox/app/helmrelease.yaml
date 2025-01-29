@@ -22,7 +22,7 @@ spec:
         containers:
           app:
             image:
-              repository: quay.io/poseidon/matchbox:v0.10.0
+              repository: quay.io/poseidon/matchbox
               tag: v0.10.0
             env:
               TZ: "${TIMEZONE}"
