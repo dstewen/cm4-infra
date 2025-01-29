@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: quay.io/poseidon/matchbox
-              tag: v0.10.0
+              tag: v0.11.0
             env:
               TZ: "${TIMEZONE}"
               MATCHBOX_ADDRESS: "0.0.0.0:8080"
