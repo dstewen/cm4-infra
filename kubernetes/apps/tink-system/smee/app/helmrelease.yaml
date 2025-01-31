@@ -47,5 +47,9 @@ spec:
       - 0.0.0.0/0
       nodeSelector:
         kubernetes.io/hostname: blade2  # Set to the k8s node name. Has to match the publicIP value above
+#      additionalVolumeMounts:
+#        - name: foo
+#          mountPath: "/etc/foo"
+#          readOnly: true
     stack:
       enabled: false
