@@ -42,7 +42,7 @@ spec:
       dhcp:
         enabled: false
       hostNetwork: true
-      publicIP: 192.168.10.32  # Set to the IP address of your node
+      publicIP: ${SVC_PXE_ADDR}  # Set to the IP address of your node
       trustedProxies:
       - 0.0.0.0/0
       nodeSelector:
@@ -53,3 +53,8 @@ spec:
 #          readOnly: true
     stack:
       enabled: false
+      service:
+        enabled: true
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: ${SVC_PXE_ADDR}
