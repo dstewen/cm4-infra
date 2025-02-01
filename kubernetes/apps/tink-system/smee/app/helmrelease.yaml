@@ -39,8 +39,8 @@ spec:
     hegel:
       deploy: false
     smee:
-      dhcp:
-        enabled: false
+#      dhcp:
+#        enabled: false
       hostNetwork: false
       logLevel: "debug"
       publicIP: ${SVC_PXE_ADDR}  # Set to the IP address of your node
