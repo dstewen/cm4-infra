@@ -42,6 +42,7 @@ spec:
       dhcp:
         enabled: false
       hostNetwork: false
+      logLevel: "debug"
       publicIP: ${SVC_PXE_ADDR}  # Set to the IP address of your node
       trustedProxies:
       - 0.0.0.0/0
